@@ -93,6 +93,7 @@ function deleteMarkers() {
 }
 
 function initMap() {
+  bounds = new google.maps.LatLngBounds();
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 11,
     center: {lat: 48.860, lng: 2.340},
