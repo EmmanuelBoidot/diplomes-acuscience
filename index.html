@@ -58,11 +58,13 @@ function renderAll(data) {
     name.appendChild(document.createTextNode(data[ii].name));
     ul.appendChild(name);
 
-    address = document.createElement("li");
+    var address = document.createElement("li");
     address.setAttribute('class', "grad_address grad_details");
-    address.appendChild(
-      document.createTextNode(data[ii].street + ",\n" + data[ii].zipcode 
-                                              + " " + data[ii].city));
+    var address_content = " " + data[ii].street 
+                              + ((data[ii].street == "")?"":", ") 
+                              + data[ii].zipcode 
+                              + " " + data[ii].city;
+    address.appendChild(document.createTextNode(address_content));
     ul.appendChild(address);
 
     var phone = document.createElement("li");
