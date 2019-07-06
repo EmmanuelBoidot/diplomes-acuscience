@@ -13,6 +13,71 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js"></script>
 
 <script type="text/javascript">
+var map;
+var markers = [];
+var infowindows = [];
+
+// Adds a marker to the map and push to the array.
+function addMarker(location, info = "") {
+  var marker = new google.maps.Marker({
+    position: location,
+    map: map
+  });
+  var infowindow = new google.maps.InfoWindow({
+      content: info
+    });
+  marker.addListener('click', function() {
+    infowindow.open(map, marker);
+  });
+  markers.push(marker);
+  infowindows.push(infowindow);
+}
+
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+  setMapOnAll(null);
+}
+
+// Shows any markers currently in the array.
+function showMarkers() {
+  setMapOnAll(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+  clearMarkers();
+  markers = [];
+  infowindows = [];
+}
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 11,
+    center: {lat: 48.860, lng: 2.340},
+    mapTypeId: 'terrain'
+  });
+
+  for (ii = 0; ii < all_graduates.length; ii++) {
+    if (all_graduates[ii].latitude == "" || 
+        all_graduates[ii].longitude == "") {
+      continue;
+    }
+
+    var position = {
+      lat: parseFloat(all_graduates[ii].latitude),
+      lng: parseFloat(all_graduates[ii].longitude)
+    };
+    addMarker(position, all_graduates[ii].name);
+  }
+}
+
 // var script = document.createElement('script');
 // script.type = 'text/javascript';
 // script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';
@@ -95,35 +160,6 @@ function locationFilter() {
     } else {
       all_grad_li[ii].style.display = "none";
     }
-  }
-}
-
-function initMap() {
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 11,
-    center: {lat: 48.860, lng: 2.340}
-  });
-
-  for (ii = 0; ii < all_graduates.length; ii++) {
-    if (all_graduates[ii].latitude == "" || all_graduates[ii].longitude == "") {
-      continue;
-    }
-
-    marker = new google.maps.Marker({
-      map: map,
-      draggable: false,
-      animation: google.maps.Animation.DROP,
-      position: {
-        lat: parseFloat(all_graduates[ii].latitude),
-        lng: parseFloat(all_graduates[ii].longitude)
-      }
-    });
-    var infowindow = new google.maps.InfoWindow({
-      content: all_graduates[ii].name
-    });
-    marker.addListener('click', function() {
-      infowindow.open(map, marker);
-    });
   }
 }
 
@@ -229,9 +265,9 @@ $.urlParam = function(name){
       $('input[id=zipcode_search]').val(query_loc);
       locationFilter();
     </script>
-<!--     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=MyKEY&callback=initMap">
-    // $.getScript('https://maps.googleapis.com/maps/api/js?key=MyKEY&callback=initMap');
-    </script> -->
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeVGo7hG6oeMu2QAIkXAiActpUdgBDFTc&callback=initMap">
+    // $.getScript('https://maps.googleapis.com/maps/api/js?key=MYKEY&callback=initMap');
+    </script>
   </body>
 </html>
