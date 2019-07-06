@@ -98,8 +98,38 @@ function locationFilter() {
   }
 }
 
+function initMap() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 11,
+    center: {lat: 48.860, lng: 2.340}
+  });
+
+  for (ii = 0; ii < all_graduates.length; ii++) {
+    if (all_graduates[ii].latitude == "" || all_graduates[ii].longitude == "") {
+      continue;
+    }
+
+    marker = new google.maps.Marker({
+      map: map,
+      draggable: false,
+      animation: google.maps.Animation.DROP,
+      position: {
+        lat: parseFloat(all_graduates[ii].latitude),
+        lng: parseFloat(all_graduates[ii].longitude)
+      }
+    });
+    var infowindow = new google.maps.InfoWindow({
+      content: all_graduates[ii].name
+    });
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+  }
+}
+
 $.urlParam = function(name){
   var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+  if (results == null || results.length < 2) return "";
   return results[1] || "";
 }
 </script>
@@ -131,6 +161,10 @@ $.urlParam = function(name){
   padding: 0;
   margin: 0;
 }
+#map {
+  height: 400px;  /* The height is 400 pixels */
+  width: 100%;  /* The width is the width of the web page */
+ }
 </style>
     <!--[if lt IE 9]>
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -191,6 +225,10 @@ $.urlParam = function(name){
       var query_loc = decodeURIComponent($.urlParam('location'))
       $('input[id=zipcode_search]').val(query_loc);
       locationFilter();
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCXRkd-GmkUkdTX9IHMbiA2OGbiLU9BMJc&callback=initMap">
+    // $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyCXRkd-GmkUkdTX9IHMbiA2OGbiLU9BMJc&callback=initMap');
     </script>
   </body>
 </html>
