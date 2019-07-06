@@ -33,7 +33,7 @@ var csv = "name,zipcode,city,phone,street,country,latitude,longitude\n"
 +"Dr. Jenny Seror,,Paris,,,FR,,\n"
 +"Dr. Hélène Maud’huy,,Paris,,,FR,,\n"
 +"Dr. Corinne Leder,,Paris,,,FR,,\n"
-+"Dr. Laurent Marzuoli,,Melun,01 60 68 62 62,,FR,48.536577,2.6602823\n"
++"Dr. Laurent Marzuoli,77000,Melun,01 60 68 62 62,9 Quai Maréchal Foch,FR,48.536577,2.6602823\n"
 +"Dr. Stéphanie Sayag,75001,Paris,,,FR,48.864896,2.3360628\n";
 
 var all_graduates = $.csv.toObjects(csv);
@@ -59,14 +59,14 @@ function renderAll(data) {
     ul.appendChild(name);
 
     address = document.createElement("li");
-    address.setAttribute('class', "grad_address");
+    address.setAttribute('class', "grad_address grad_details");
     address.appendChild(
-      document.createTextNode(data[ii].street + "\n" + data[ii].zipcode 
+      document.createTextNode(data[ii].street + ",\n" + data[ii].zipcode 
                                               + " " + data[ii].city));
     ul.appendChild(address);
 
     var phone = document.createElement("li");
-    phone.setAttribute('class', "grad_phone");
+    phone.setAttribute('class', "grad_details");
     phone.appendChild(document.createTextNode(data[ii].phone));
     ul.appendChild(phone);
 
@@ -99,7 +99,7 @@ function zipcodeFilter() {
     <link rel="stylesheet" href="./css/poole.min.css">
     <link rel="stylesheet" href="./css/poole.overrides.min.css">
     <style>
-.grad_address .grad_phone{
+.grad_details{
   /* Remove default list styling */
   list-style-type: none;
   font-size: 0.9em;
