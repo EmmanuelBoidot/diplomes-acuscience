@@ -99,6 +99,10 @@ function zipcodeFilter() {
     <link rel="stylesheet" href="./css/poole.min.css">
     <link rel="stylesheet" href="./css/poole.overrides.min.css">
     <style>
+.grad_address {
+  /* Remove default list styling */
+  list-style-type: none;
+}
 #zipcode_search {
   background-image: url('/css/searchicon.png'); /* Add a search icon to input */
   background-position: 10px 12px; /* Position the search icon */
@@ -115,21 +119,6 @@ function zipcodeFilter() {
   list-style-type: none;
   padding: 0;
   margin: 0;
-}
-
-#graduates_list li a {
-  border: 1px solid #ddd; /* Add a border to all links */
-  margin-top: -1px; /* Prevent double borders */
-  background-color: #f6f6f6; /* Grey background color */
-  padding: 12px; /* Add some padding */
-  text-decoration: none; /* Remove default text underline */
-  font-size: 18px; /* Increase the font-size */
-  color: black; /* Add a black text color */
-  display: block; /* Make it into a block element to fill the whole list */
-}
-
-#graduates_list li a:hover:not(.header) {
-  background-color: #eee; /* Add a hover effect to all links, except for headers */
 }
 </style>
     <!--[if lt IE 9]>
@@ -168,9 +157,9 @@ function zipcodeFilter() {
       </div>
 
       <!-- CMS -->
-      <div id="embeded_google_spreadsheet">
+<!--       <div id="embeded_google_spreadsheet">
       <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQrA-KVPJWbtUgJnQuT9Z6LvzzgecP3kYuvjyha50NP3JHF674Op8RPhISzeDnryX_yyTu9fJ9eXRIz/pubhtml?widget=true&amp;headers=false" style="width:95%;height:500px;"></iframe>
-      </div>
+      </div> -->
 
       <!-- Footer -->
       <footer class="footer">
