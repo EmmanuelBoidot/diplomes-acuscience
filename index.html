@@ -16,7 +16,12 @@
 var map;
 var markers = [];
 var infowindows = [];
-var bounds = new google.maps.LatLngBounds();
+var bounds = {
+        north: 48.80,
+        south: 48.90,
+        west: 2.30,
+        east: 2.40,
+      };
 var all_graduates = [];
 var filtered_graduates = [];
 
@@ -296,7 +301,7 @@ $.urlParam = function(name){
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeVGo7hG6oeMu2QAIkXAiActpUdgBDFTc&callback=initMap">
-    // $.getScript('https://maps.googleapis.com/maps/api/js?key=MYKEY&callback=initMap');
+    // $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyCeVGo7hG6oeMu2QAIkXAiActpUdgBDFTc&callback=initMap');
     </script>
   </body>
 </html>
