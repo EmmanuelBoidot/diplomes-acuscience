@@ -101,11 +101,8 @@ $.urlParam = function(name){
   var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
   return results[1] || 0;
 }
-
-var query_loc = decodeURIComponent($.urlParam('location'))
-$('input[id=zipcode_search]').val(query_loc);
-locationFilter();
 </script>
+
     <link rel="stylesheet" href="./css/animations.css">
     <link rel="stylesheet" href="./css/poole.min.css">
     <link rel="stylesheet" href="./css/poole.overrides.min.css">
@@ -189,6 +186,10 @@ locationFilter();
     <script src="./js/config.js"></script>
     <script type="text/javascript"> 
       renderAll(all_graduates);  
+
+      var query_loc = decodeURIComponent($.urlParam('location'))
+      $('input[id=zipcode_search]').val(query_loc);
+      locationFilter();
     </script>
   </body>
 </html>
