@@ -7,9 +7,126 @@
     <meta name="description" content="Annuaire des diplomés du DIU d'Acuponcture Scientifique">
     <meta name="author" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<!-- CSV library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js"></script>
+
+<script type="text/javascript">
+//
+// var script = document.createElement('script');
+// script.type = 'text/javascript';
+// script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';
+// document.head.appendChild(script);
+// //
+// $.getScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js');
+
+
+var csv = "Nom,Code Postal,Ville,Telephone,Addresse,Pays,latitude,longitude\n"
++"Dr. Philippe Jeannin,,Paris,,,FR,,\n"
++"Dr. Béatrice Paquier,,Paris,,,FR,,\n"
++"Dr. Leonid Ferdman,75008,Paris,,,FR,48.869305,2.2976733\n"
++"Dr. Patrick Sautreuil,,Paris,,,FR,,\n"
++"Dr. Valérie Salques,,Paris,,,FR,,\n"
++"Dr. Florence Zembra,,Paris,,,FR,,\n"
++"Dr. Philippe Mercier,,Paris,,,FR,,\n"
++"Dr. Juan Armas,,Paris,,,FR,,\n"
++"Dr. Jenny Seror,,Paris,,,FR,,\n"
++"Dr. Hélène Maud’huy,,Paris,,,FR,,\n"
++"Dr. Corinne Leder,,Paris,,,FR,,\n"
++"Dr. Laurent Marzuoli,,Melun,,,FR,48.536577,2.6602823\n"
++"Dr. Stéphanie Sayag,75001,Paris,,,FR,48.864896,2.3360628\n";
+
+var all_graduates = $.csv.toObjects(csv);
+
+function removeAll(){
+  var graduate_list = document.getElementById("graduates_list");
+  while (graduate_list.firstChild) {
+    graduate_list.removeChild(graduate_list.firstChild);
+  }
+}
+
+function renderAll(data) {
+ removeAll();
+ var graduate_list = document.getElementById("graduates_list");
+ for (ii = 0; ii < data.length; ii++) {
+    var grad_li = document.createElement("li");
+    var ul = document.createElement("ul");
+    ul.setAttribute('class', "grad_attributes");
+    Object.entries(data[ii]).forEach(entry => {
+      let key = entry[0];
+      let value = entry[1];
+
+      if (key == "longitude" || key == "latitude" || key == "Pays") return;
+      //use key and value here
+      var grad_attribute_li = document.createElement("li");
+      grad_attribute_li.setAttribute('class', key);
+      grad_attribute_li.appendChild(document.createTextNode(value));
+      ul.appendChild(grad_attribute_li);
+    });
+    grad_li.appendChild(ul);
+    graduate_list.appendChild(grad_li);
+  }
+}
+
+function zipcodeFilter() {
+  // Declare variables
+  var input, filter, ul, li, a, i, txtValue;
+  input = document.getElementById('zipcode_search');
+  filter = input.value;//.toUpperCase();
+  graduate_list = document.getElementById("graduates_list");
+  all_grad_li = graduate_list.getElementsByClassName("grad_attributes");
+
+  // Loop through all list items, and hide those who don't match the search query
+  for (ii = 0; ii < all_grad_li.length; ii++) {
+    // a = all_grad_li[ii].getElementsByTagName("ul")[0];
+    a = all_grad_li[ii].getElementsByClassName("Code Postal")[0];
+    txtValue = a.textContent || a.innerText;
+    if (txtValue.indexOf(filter) > -1) {
+      all_grad_li[ii].style.display = "";
+    } else {
+      all_grad_li[ii].style.display = "none";
+    }
+  }
+}
+</script>
     <link rel="stylesheet" href="./css/animations.css">
     <link rel="stylesheet" href="./css/poole.min.css">
     <link rel="stylesheet" href="./css/poole.overrides.min.css">
+    <style>
+#zipcode_search {
+  background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+  background-position: 10px 12px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 40px; /* Add some padding */
+  border: 1px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
+
+#graduates_list {
+  /* Remove default list styling */
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#graduates_list li a {
+  border: 1px solid #ddd; /* Add a border to all links */
+  margin-top: -1px; /* Prevent double borders */
+  background-color: #f6f6f6; /* Grey background color */
+  padding: 12px; /* Add some padding */
+  text-decoration: none; /* Remove default text underline */
+  font-size: 18px; /* Increase the font-size */
+  color: black; /* Add a black text color */
+  display: block; /* Make it into a block element to fill the whole list */
+}
+
+#graduates_list li a:hover:not(.header) {
+  background-color: #eee; /* Add a hover effect to all links, except for headers */
+}
+</style>
     <!--[if lt IE 9]>
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -37,6 +154,13 @@
           </ul>
         </nav>
       </header>
+      
+      <div id="list_content">
+        <input type="text" id="zipcode_search" onkeyup="zipcodeFilter()" placeholder="Code postal">
+
+        <ul id="graduates_list">
+        </ul>
+      </div>
 
       <!-- CMS -->
       <div id="embeded_google_spreadsheet">
