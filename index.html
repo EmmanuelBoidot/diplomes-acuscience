@@ -13,7 +13,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js"></script>
 
 <script type="text/javascript">
-// //
 // var script = document.createElement('script');
 // script.type = 'text/javascript';
 // script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';
@@ -22,7 +21,7 @@
 // $.getScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js');
 
 
-var csv = "Nom,Code Postal,Ville,Telephone,Addresse,Pays,latitude,longitude\n"
+var csv = "name,zipcode,city,phone,street,country,latitude,longitude\n"
 +"Dr. Philippe Jeannin,,Paris,,,FR,,\n"
 +"Dr. Béatrice Paquier,,Paris,,,FR,,\n"
 +"Dr. Leonid Ferdman,75008,Paris,,,FR,48.869305,2.2976733\n"
@@ -34,7 +33,7 @@ var csv = "Nom,Code Postal,Ville,Telephone,Addresse,Pays,latitude,longitude\n"
 +"Dr. Jenny Seror,,Paris,,,FR,,\n"
 +"Dr. Hélène Maud’huy,,Paris,,,FR,,\n"
 +"Dr. Corinne Leder,,Paris,,,FR,,\n"
-+"Dr. Laurent Marzuoli,,Melun,,,FR,48.536577,2.6602823\n"
++"Dr. Laurent Marzuoli,,Melun,01 60 68 62 62,,FR,48.536577,2.6602823\n"
 +"Dr. Stéphanie Sayag,75001,Paris,,,FR,48.864896,2.3360628\n";
 
 var all_graduates = $.csv.toObjects(csv);
@@ -53,22 +52,24 @@ function renderAll(data) {
     var grad_li = document.createElement("li");
     var ul = document.createElement("ul");
     ul.setAttribute('class', "grad_attributes");
-    // Object.entries(data[ii]).forEach(entry => {
-    //   let key = entry[0];
-    //   let value = entry[1];
 
-    //   if (key == "longitude" || key == "latitude" || key == "Pays") return;
-      //use key and value here
-      var name = document.createElement("li");
-      name.setAttribute('class', "grad_name");
-      name.appendChild(document.createTextNode(data[ii].Nom));
-      ul.appendChild(name);
+    var name = document.createElement("li");
+    name.setAttribute('class', "grad_name");
+    name.appendChild(document.createTextNode(data[ii].name));
+    ul.appendChild(name);
 
-      address = document.createElement("li");
-      address.setAttribute('class', "grad_address");
-      address.appendChild(document.createTextNode(data[ii].Addresse + "\n" + data[ii]["Code\ Postal"] + " " + data[ii].Ville));
-      ul.appendChild(address);
-    // });
+    address = document.createElement("li");
+    address.setAttribute('class', "grad_address");
+    address.appendChild(
+      document.createTextNode(data[ii].street + "\n" + data[ii].zipcode 
+                                              + " " + data[ii].city));
+    ul.appendChild(address);
+
+    var phone = document.createElement("li");
+    phone.setAttribute('class', "grad_phone");
+    phone.appendChild(document.createTextNode(data[ii].phone));
+    ul.appendChild(phone);
+
     grad_li.appendChild(ul);
     graduate_list.appendChild(grad_li);
   }
@@ -84,7 +85,6 @@ function zipcodeFilter() {
 
   // Loop through all list items, and hide those who don't match the search query
   for (ii = 0; ii < all_grad_li.length; ii++) {
-    // a = all_grad_li[ii].getElementsByTagName("ul")[0];
     a = all_grad_li[ii].getElementsByClassName("grad_address")[0];
     txtValue = a.textContent || a.innerText;
     if (txtValue.indexOf(filter) > -1) {
@@ -99,7 +99,7 @@ function zipcodeFilter() {
     <link rel="stylesheet" href="./css/poole.min.css">
     <link rel="stylesheet" href="./css/poole.overrides.min.css">
     <style>
-.grad_address {
+.grad_address .grad_phone{
   /* Remove default list styling */
   list-style-type: none;
   font-size: 0.9em;
