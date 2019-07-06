@@ -16,6 +16,9 @@
 var map;
 var markers = [];
 var infowindows = [];
+var bounds = new google.maps.LatLngBounds();
+var all_graduates = [];
+var filtered_graduates = [];
 
 // Adds a marker to the map and push to the array.
 function addMarker(location, info = "") {
@@ -31,6 +34,7 @@ function addMarker(location, info = "") {
   });
   markers.push(marker);
   infowindows.push(infowindow);
+  bounds.extend(location);
 }
 
 // Sets the map on all markers in the array.
@@ -55,6 +59,7 @@ function deleteMarkers() {
   clearMarkers();
   markers = [];
   infowindows = [];
+  bounds = new google.maps.LatLngBounds();
 }
 
 function initMap() {
@@ -76,6 +81,7 @@ function initMap() {
     };
     addMarker(position, all_graduates[ii].name);
   }
+  map.fitBounds(bounds);
 }
 
 // var script = document.createElement('script');
@@ -101,13 +107,22 @@ var csv = "name,zipcode,city,phone,street,country,latitude,longitude\n"
 +"Dr. Laurent Marzuoli,77000,Melun,01 60 68 62 62,9 Quai Maréchal Foch,France,48.536577,2.6602823\n"
 +"Dr. Stéphanie Sayag,75001,Paris,,,France,48.864896,2.3360628\n";
 
-var all_graduates = $.csv.toObjects(csv);
+all_graduates = $.csv.toObjects(csv);
 
 function removeAll(){
   var graduate_list = document.getElementById("graduates_list");
   while (graduate_list.firstChild) {
     graduate_list.removeChild(graduate_list.firstChild);
   }
+  deleteMarkers();
+}
+
+function getAddressString(data) {
+  return " " + data.street 
+             + ((data.street == "")?"":", ") 
+             + data.zipcode 
+             + " " + data.city;
+             + ", " + data.country;
 }
 
 function renderAll(data) {
@@ -125,11 +140,7 @@ function renderAll(data) {
 
     var address = document.createElement("li");
     address.setAttribute('class', "grad_address grad_details");
-    var address_content = " " + data[ii].street 
-                              + ((data[ii].street == "")?"":", ") 
-                              + data[ii].zipcode 
-                              + " " + data[ii].city;
-                              + ", " + data[ii].country;
+    var address_content = getAddressString(data[ii]);
     address.appendChild(document.createTextNode(address_content));
     ul.appendChild(address);
 
@@ -161,6 +172,24 @@ function locationFilter() {
       all_grad_li[ii].style.display = "none";
     }
   }
+
+  filtered_graduates = all_graduates.filter(function(d) {
+      return getAddressString(d).toUpperCase().indexOf(filter) > -1;
+  });
+  bounds = new google.maps.LatLngBounds();
+  for (ii = 0; ii < filtered_graduates.length; ii++) {
+    if (filtered_graduates[ii].latitude == "" || 
+        filtered_graduates[ii].longitude == "") {
+      continue;
+    }
+
+    var position = {
+      lat: parseFloat(filtered_graduates[ii].latitude),
+      lng: parseFloat(filtered_graduates[ii].longitude)
+    };
+    bounds.extend(position);
+  }
+  map.fitBounds(bounds);
 }
 
 $.urlParam = function(name){
