@@ -115,7 +115,7 @@ function initMap() {
     };
     addMarker(position, all_graduates[ii].name);
   }
-  map.fitBounds(bounds);
+  locationFilter();
 }
 
 function removeAll(){
@@ -301,7 +301,6 @@ $.urlParam = function(name){
 
       var query_loc = decodeURIComponent($.urlParam('location'))
       $('input[id=zipcode_search]').val(query_loc);
-      locationFilter();
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeVGo7hG6oeMu2QAIkXAiActpUdgBDFTc&callback=initMap">
