@@ -22,19 +22,19 @@
 
 
 var csv = "name,zipcode,city,phone,street,country,latitude,longitude\n"
-+"Dr. Philippe Jeannin,,Paris,,,FR,,\n"
-+"Dr. Béatrice Paquier,,Paris,,,FR,,\n"
-+"Dr. Leonid Ferdman,75008,Paris,,,FR,48.869305,2.2976733\n"
-+"Dr. Patrick Sautreuil,,Paris,,,FR,,\n"
-+"Dr. Valérie Salques,,Paris,,,FR,,\n"
-+"Dr. Florence Zembra,,Paris,,,FR,,\n"
-+"Dr. Philippe Mercier,,Paris,,,FR,,\n"
-+"Dr. Juan Armas,,Paris,,,FR,,\n"
-+"Dr. Jenny Seror,,Paris,,,FR,,\n"
-+"Dr. Hélène Maud’huy,,Paris,,,FR,,\n"
-+"Dr. Corinne Leder,,Paris,,,FR,,\n"
-+"Dr. Laurent Marzuoli,77000,Melun,01 60 68 62 62,9 Quai Maréchal Foch,FR,48.536577,2.6602823\n"
-+"Dr. Stéphanie Sayag,75001,Paris,,,FR,48.864896,2.3360628\n";
++"Dr. Philippe Jeannin,,Paris,,,France,,\n"
++"Dr. Béatrice Paquier,,Paris,,,France,,\n"
++"Dr. Leonid Ferdman,75008,Paris,,,France,48.869305,2.2976733\n"
++"Dr. Patrick Sautreuil,,Paris,,,France,,\n"
++"Dr. Valérie Salques,,Paris,,,France,,\n"
++"Dr. Florence Zembra,,Paris,,,France,,\n"
++"Dr. Philippe Mercier,,Paris,,,France,,\n"
++"Dr. Juan Armas,,Paris,,,France,,\n"
++"Dr. Jenny Seror,,Paris,,,France,,\n"
++"Dr. Hélène Maud’huy,,Paris,,,France,,\n"
++"Dr. Corinne Leder,,Paris,,,France,,\n"
++"Dr. Laurent Marzuoli,77000,Melun,01 60 68 62 62,9 Quai Maréchal Foch,France,48.536577,2.6602823\n"
++"Dr. Stéphanie Sayag,75001,Paris,,,France,48.864896,2.3360628\n";
 
 var all_graduates = $.csv.toObjects(csv);
 
@@ -64,6 +64,7 @@ function renderAll(data) {
                               + ((data[ii].street == "")?"":", ") 
                               + data[ii].zipcode 
                               + " " + data[ii].city;
+                              + ", " + data[ii].country;
     address.appendChild(document.createTextNode(address_content));
     ul.appendChild(address);
 
@@ -99,7 +100,7 @@ function locationFilter() {
 
 $.urlParam = function(name){
   var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-  return results[1] || 0;
+  return results[1] || "";
 }
 </script>
 
