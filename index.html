@@ -13,7 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js"></script>
 
 <script type="text/javascript">
-//
+// //
 // var script = document.createElement('script');
 // script.type = 'text/javascript';
 // script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';
@@ -53,17 +53,22 @@ function renderAll(data) {
     var grad_li = document.createElement("li");
     var ul = document.createElement("ul");
     ul.setAttribute('class', "grad_attributes");
-    Object.entries(data[ii]).forEach(entry => {
-      let key = entry[0];
-      let value = entry[1];
+    // Object.entries(data[ii]).forEach(entry => {
+    //   let key = entry[0];
+    //   let value = entry[1];
 
-      if (key == "longitude" || key == "latitude" || key == "Pays") return;
+    //   if (key == "longitude" || key == "latitude" || key == "Pays") return;
       //use key and value here
-      var grad_attribute_li = document.createElement("li");
-      grad_attribute_li.setAttribute('class', key);
-      grad_attribute_li.appendChild(document.createTextNode(value));
-      ul.appendChild(grad_attribute_li);
-    });
+      var name = document.createElement("li");
+      name.setAttribute('class', "grad_name");
+      name.appendChild(document.createTextNode(data[ii].Nom));
+      ul.appendChild(name);
+
+      address = document.createElement("li");
+      address.setAttribute('class', "grad_address");
+      address.appendChild(document.createTextNode(data[ii].Addresse + "\n" + data[ii]["Code\ Postal"] + " " + data[ii].Ville));
+      ul.appendChild(address);
+    // });
     grad_li.appendChild(ul);
     graduate_list.appendChild(grad_li);
   }
@@ -80,7 +85,7 @@ function zipcodeFilter() {
   // Loop through all list items, and hide those who don't match the search query
   for (ii = 0; ii < all_grad_li.length; ii++) {
     // a = all_grad_li[ii].getElementsByTagName("ul")[0];
-    a = all_grad_li[ii].getElementsByClassName("Code Postal")[0];
+    a = all_grad_li[ii].getElementsByClassName("grad_address")[0];
     txtValue = a.textContent || a.innerText;
     if (txtValue.indexOf(filter) > -1) {
       all_grad_li[ii].style.display = "";
@@ -156,7 +161,7 @@ function zipcodeFilter() {
       </header>
       
       <div id="list_content">
-        <input type="text" id="zipcode_search" onkeyup="zipcodeFilter()" placeholder="Code postal">
+        <input type="text" id="zipcode_search" onkeyup="zipcodeFilter()" placeholder="Ville ou Code postal">
 
         <ul id="graduates_list">
         </ul>
