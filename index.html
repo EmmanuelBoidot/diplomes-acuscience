@@ -97,7 +97,7 @@ function updateQueryStringParam(key, value) {
 
     }
     window.history.replaceState({}, "", baseUrl + params);
-}
+};
 
 function addGraduateMarkers() {
   deleteMarkers();
@@ -153,7 +153,8 @@ function renderAll(data) {
 
     var name = document.createElement("li");
     name.setAttribute('class', "grad_name");
-    name.appendChild(document.createTextNode(data[ii].gsx$name.$t));
+    name.appendChild(document.createTextNode(data[ii].gsx$title.$t
+            + '. ' + data[ii].gsx$name.$t));
     ul.appendChild(name);
 
     var address = document.createElement("li");
