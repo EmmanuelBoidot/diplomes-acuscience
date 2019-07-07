@@ -35,27 +35,10 @@ var filtered_graduates = [];
 // //
 // $.getScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js');
 
-
-// var csv = "name,zipcode,city,phone,street,country,latitude,longitude\n"
-// +"Dr. Philippe Jeannin,,Paris,,,France,,\n"
-// +"Dr. Béatrice Paquier,,Paris,,,France,,\n"
-// +"Dr. Leonid Ferdman,75008,Paris,,,France,48.869305,2.2976733\n"
-// +"Dr. Patrick Sautreuil,,Paris,,,France,,\n"
-// +"Dr. Valérie Salques,,Paris,,,France,,\n"
-// +"Dr. Florence Zembra,,Paris,,,France,,\n"
-// +"Dr. Philippe Mercier,,Paris,,,France,,\n"
-// +"Dr. Juan Armas,,Paris,,,France,,\n"
-// +"Dr. Jenny Seror,,Paris,,,France,,\n"
-// +"Dr. Hélène Maud’huy,,Paris,,,France,,\n"
-// +"Dr. Corinne Leder,,Paris,,,France,,\n"
-// +"Dr. Laurent Marzuoli,77000,Melun,01 60 68 62 62,9 Quai Maréchal Foch,France,48.536577,2.6602823\n"
-// +"Dr. Stéphanie Sayag,75001,Paris,,,France,48.864896,2.3360628\n";
-
-// all_graduates = $.csv.toObjects(csv);
-
 $.getJSON("https://spreadsheets.google.com/feeds/list/1UMkOZ4NYFp0BQWu0-LX6Fia84_5UMek_guFmQpSkaeU/od49jcp/public/values?alt=json", function(data) {
   all_graduates = data.feed.entry;
   renderAll(all_graduates);
+  addGraduateMarkers()
   locationFilter();
 });
 
@@ -124,6 +107,7 @@ var updateQueryStringParam = function (key, value) {
 };
 
 function addGraduateMarkers() {
+  deleteMarkers();
   for (ii = 0; ii < all_graduates.length; ii++) {
     if (all_graduates[ii].gsx$latitude.$t == "" || 
         all_graduates[ii].gsx$longitude.$t == "") {
