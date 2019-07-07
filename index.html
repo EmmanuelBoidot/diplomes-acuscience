@@ -56,8 +56,6 @@ var filtered_graduates = [];
 $.getJSON("https://spreadsheets.google.com/feeds/list/1UMkOZ4NYFp0BQWu0-LX6Fia84_5UMek_guFmQpSkaeU/od49jcp/public/values?alt=json", function(data) {
   all_graduates = data.feed.entry;
   renderAll(all_graduates);
-  var query_loc = decodeURIComponent($.urlParam('location'))
-  $('input[id=zipcode_search]').val(query_loc);
   locationFilter();
 });
 
@@ -125,14 +123,7 @@ var updateQueryStringParam = function (key, value) {
     window.history.replaceState({}, "", baseUrl + params);
 };
 
-function initMap() {
-  bounds = new google.maps.LatLngBounds();
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 11,
-    center: {lat: 48.860, lng: 2.340},
-    mapTypeId: 'terrain'
-  });
-
+function addGraduateMarkers() {
   for (ii = 0; ii < all_graduates.length; ii++) {
     if (all_graduates[ii].gsx$latitude.$t == "" || 
         all_graduates[ii].gsx$longitude.$t == "") {
@@ -146,6 +137,17 @@ function initMap() {
     // console.log(position);
     addMarker(position, all_graduates[ii].name);
   }
+}
+
+function initMap() {
+  bounds = new google.maps.LatLngBounds();
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 11,
+    center: {lat: 48.860, lng: 2.340},
+    mapTypeId: 'terrain'
+  });
+
+  addGraduateMarkers();
   locationFilter();
 }
 
@@ -329,6 +331,10 @@ $.urlParam = function(name){
     <script src="./js/cms.js"></script>
     <!-- Config -->
     <script src="./js/config.js"></script>
+    <script>
+      var query_loc = decodeURIComponent($.urlParam('location'))
+      $('input[id=zipcode_search]').val(query_loc);
+    </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHcIwtiJoCdb4ahacBB4J-Q40SrRcQVdY&callback=initMap">
     // $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyCHcIwtiJoCdb4ahacBB4J-Q40SrRcQVdY&callback=initMap');
