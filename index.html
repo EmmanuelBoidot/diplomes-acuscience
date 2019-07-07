@@ -95,6 +95,28 @@ function deleteMarkers() {
   bounds = defaultBounds();
 }
 
+var updateQueryStringParam = function (key, value) {
+    var baseUrl = [location.protocol, '//', location.host, location.pathname].join(''),
+        urlQueryString = document.location.search,
+        newParam = key + '=' + value,
+        params = '?' + newParam;
+
+    // If the "search" string exists, then build params from it
+    if (urlQueryString) {
+        keyRegex = new RegExp('([\?&])' + key + '[^&]*');
+
+        // If param exists already, update it
+        if (urlQueryString.match(keyRegex) !== null) {
+            params = urlQueryString.replace(keyRegex, "$1" + newParam);
+        } else { // Otherwise, add it to end of query string
+            params = urlQueryString + '&' + newParam;
+        }
+    } else {
+
+    }
+    window.history.replaceState({}, "", baseUrl + params);
+};
+
 function initMap() {
   bounds = new google.maps.LatLngBounds();
   map = new google.maps.Map(document.getElementById('map'), {
@@ -170,6 +192,8 @@ function locationFilter() {
   filter = input.value.toUpperCase();
   graduate_list = document.getElementById("graduates_list");
   all_grad_li = graduate_list.getElementsByClassName("grad_attributes");
+
+  updateQueryStringParam('location',input.value);
 
   // Loop through all list items, and hide those who don't match the search query
   for (ii = 0; ii < all_grad_li.length; ii++) {
