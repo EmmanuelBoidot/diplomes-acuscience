@@ -35,12 +35,6 @@ var filtered_graduates = [];
 // //
 // $.getScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js');
 
-$.getJSON("https://spreadsheets.google.com/feeds/list/1UMkOZ4NYFp0BQWu0-LX6Fia84_5UMek_guFmQpSkaeU/od49jcp/public/values?alt=json", function(data) {
-  all_graduates = data.feed.entry;
-  renderAll(all_graduates);
-  $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyCHcIwtiJoCdb4ahacBB4J-Q40SrRcQVdY&callback=initMap');
-});
-
 // Adds a marker to the map and push to the array.
 function addMarker(location, info = "") {
   var marker = new google.maps.Marker({
@@ -317,6 +311,12 @@ $.urlParam = function(name){
     <script>
       var query_loc = decodeURIComponent($.urlParam('location'))
       $('input[id=zipcode_search]').val(query_loc);
+
+      $.getJSON("https://spreadsheets.google.com/feeds/list/1UMkOZ4NYFp0BQWu0-LX6Fia84_5UMek_guFmQpSkaeU/od49jcp/public/values?alt=json", function(data) {
+        all_graduates = data.feed.entry;
+        renderAll(all_graduates);
+        $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyCHcIwtiJoCdb4ahacBB4J-Q40SrRcQVdY&callback=initMap');
+      });
     </script>
   </body>
 </html>
