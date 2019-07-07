@@ -10,7 +10,7 @@
     <!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <!-- CSV library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js"></script> -->
 
 <script type="text/javascript">
 var map;
@@ -18,10 +18,10 @@ var markers = [];
 var infowindows = [];
 function defaultBounds() {
   return {
-        north: 48.80,
-        south: 48.90,
-        west: 2.30,
-        east: 2.40,
+        north: 48.70,
+        south: 49.00,
+        west: 2.20,
+        east: 2.50,
       };
 }
 var bounds = defaultBounds();
@@ -36,22 +36,26 @@ var filtered_graduates = [];
 // $.getScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js');
 
 
-var csv = "name,zipcode,city,phone,street,country,latitude,longitude\n"
-+"Dr. Philippe Jeannin,,Paris,,,France,,\n"
-+"Dr. Béatrice Paquier,,Paris,,,France,,\n"
-+"Dr. Leonid Ferdman,75008,Paris,,,France,48.869305,2.2976733\n"
-+"Dr. Patrick Sautreuil,,Paris,,,France,,\n"
-+"Dr. Valérie Salques,,Paris,,,France,,\n"
-+"Dr. Florence Zembra,,Paris,,,France,,\n"
-+"Dr. Philippe Mercier,,Paris,,,France,,\n"
-+"Dr. Juan Armas,,Paris,,,France,,\n"
-+"Dr. Jenny Seror,,Paris,,,France,,\n"
-+"Dr. Hélène Maud’huy,,Paris,,,France,,\n"
-+"Dr. Corinne Leder,,Paris,,,France,,\n"
-+"Dr. Laurent Marzuoli,77000,Melun,01 60 68 62 62,9 Quai Maréchal Foch,France,48.536577,2.6602823\n"
-+"Dr. Stéphanie Sayag,75001,Paris,,,France,48.864896,2.3360628\n";
+// var csv = "name,zipcode,city,phone,street,country,latitude,longitude\n"
+// +"Dr. Philippe Jeannin,,Paris,,,France,,\n"
+// +"Dr. Béatrice Paquier,,Paris,,,France,,\n"
+// +"Dr. Leonid Ferdman,75008,Paris,,,France,48.869305,2.2976733\n"
+// +"Dr. Patrick Sautreuil,,Paris,,,France,,\n"
+// +"Dr. Valérie Salques,,Paris,,,France,,\n"
+// +"Dr. Florence Zembra,,Paris,,,France,,\n"
+// +"Dr. Philippe Mercier,,Paris,,,France,,\n"
+// +"Dr. Juan Armas,,Paris,,,France,,\n"
+// +"Dr. Jenny Seror,,Paris,,,France,,\n"
+// +"Dr. Hélène Maud’huy,,Paris,,,France,,\n"
+// +"Dr. Corinne Leder,,Paris,,,France,,\n"
+// +"Dr. Laurent Marzuoli,77000,Melun,01 60 68 62 62,9 Quai Maréchal Foch,France,48.536577,2.6602823\n"
+// +"Dr. Stéphanie Sayag,75001,Paris,,,France,48.864896,2.3360628\n";
 
-all_graduates = $.csv.toObjects(csv);
+// all_graduates = $.csv.toObjects(csv);
+
+$.getJSON("https://spreadsheets.google.com/feeds/list/1UMkOZ4NYFp0BQWu0-LX6Fia84_5UMek_guFmQpSkaeU/od49jcp/public/values?alt=json", function(data) {
+  all_graduates = data.feed.entry;
+});
 
 // Adds a marker to the map and push to the array.
 function addMarker(location, info = "") {
@@ -126,15 +130,16 @@ function initMap() {
   });
 
   for (ii = 0; ii < all_graduates.length; ii++) {
-    if (all_graduates[ii].latitude == "" || 
-        all_graduates[ii].longitude == "") {
+    if (all_graduates[ii].gsx$latitude.$t == "" || 
+        all_graduates[ii].gsx$longitude.$t == "") {
       continue;
     }
 
     var position = {
-      lat: parseFloat(all_graduates[ii].latitude),
-      lng: parseFloat(all_graduates[ii].longitude)
+      lat: parseFloat(all_graduates[ii].gsx$latitude.$t),
+      lng: parseFloat(all_graduates[ii].gsx$longitude.$t)
     };
+    console.log(position);
     addMarker(position, all_graduates[ii].name);
   }
   locationFilter();
@@ -149,11 +154,11 @@ function removeAll(){
 }
 
 function getAddressString(data) {
-  return " " + data.street 
-             + ((data.street == "")?"":", ") 
-             + data.zipcode 
-             + " " + data.city
-             + ", " + data.country;
+  return " " + data.gsx$street.$t 
+             + ((data.gsx$street.$t == "")?"":", ") 
+             + data.gsx$zipcode.$t 
+             + " " + data.gsx$city.$t
+             + ", " + data.gsx$country.$t;
 }
 
 function renderAll(data) {
@@ -166,7 +171,7 @@ function renderAll(data) {
 
     var name = document.createElement("li");
     name.setAttribute('class', "grad_name");
-    name.appendChild(document.createTextNode(data[ii].name));
+    name.appendChild(document.createTextNode(data[ii].gsx$name.$t));
     ul.appendChild(name);
 
     var address = document.createElement("li");
@@ -177,7 +182,7 @@ function renderAll(data) {
 
     var phone = document.createElement("li");
     phone.setAttribute('class', "grad_details");
-    phone.appendChild(document.createTextNode(data[ii].phone));
+    phone.appendChild(document.createTextNode(data[ii].gsx$phone.$t));
     ul.appendChild(phone);
 
     grad_li.appendChild(ul);
@@ -211,14 +216,14 @@ function locationFilter() {
   });
   bounds = new google.maps.LatLngBounds();
   for (ii = 0; ii < filtered_graduates.length; ii++) {
-    if (filtered_graduates[ii].latitude == "" || 
-        filtered_graduates[ii].longitude == "") {
+    if (filtered_graduates[ii].gsx$latitude.$t == "" || 
+        filtered_graduates[ii].gsx$longitude.$t == "") {
       continue;
     }
 
     var position = {
-      lat: parseFloat(filtered_graduates[ii].latitude),
-      lng: parseFloat(filtered_graduates[ii].longitude)
+      lat: parseFloat(filtered_graduates[ii].gsx$latitude.$t),
+      lng: parseFloat(filtered_graduates[ii].gsx$longitude.$t)
     };
     bounds.extend(position);
   }
@@ -243,7 +248,7 @@ $.urlParam = function(name){
   opacity: 0.7;
 }
 #zipcode_search {
-  background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+  /*background-image: url('/css/searchicon.png'); /* Add a search icon to input */
   background-position: 10px 12px; /* Position the search icon */
   background-repeat: no-repeat; /* Do not repeat the icon image */
   width: 100%; /* Full-width */
