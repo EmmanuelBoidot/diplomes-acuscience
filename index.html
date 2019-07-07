@@ -77,7 +77,7 @@ function deleteMarkers() {
   bounds = new google.maps.LatLngBounds();
 }
 
-var updateQueryStringParam = function (key, value) {
+function updateQueryStringParam(key, value) {
     var baseUrl = [location.protocol, '//', location.host, location.pathname].join(''),
         urlQueryString = document.location.search,
         newParam = key + '=' + value,
@@ -97,7 +97,7 @@ var updateQueryStringParam = function (key, value) {
 
     }
     window.history.replaceState({}, "", baseUrl + params);
-};
+}
 
 function addGraduateMarkers() {
   deleteMarkers();
