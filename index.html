@@ -74,7 +74,7 @@ function deleteMarkers() {
   clearMarkers();
   markers = [];
   infowindows = [];
-  bounds = defaultBounds();
+  bounds = new google.maps.LatLngBounds();
 }
 
 var updateQueryStringParam = function (key, value) {
