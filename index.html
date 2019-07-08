@@ -163,10 +163,13 @@ function renderAll(data) {
     address.appendChild(document.createTextNode(address_content));
     ul.appendChild(address);
 
-    var phone = document.createElement("li");
-    phone.setAttribute('class', "grad_details");
+    var phone_li = document.createElement("li");
+    phone_li.setAttribute('class', "grad_details");
+    var phone = document.createElement("a");
+    phone.setAttribute('href', 'tel:'+data[ii].gsx$phone.$t)
     phone.appendChild(document.createTextNode(data[ii].gsx$phone.$t));
-    ul.appendChild(phone);
+    phone_li.appendChild(phone);
+    ul.appendChild(phone_li);
 
     grad_li.appendChild(ul);
     graduate_list.appendChild(grad_li);
