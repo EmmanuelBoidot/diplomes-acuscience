@@ -16,6 +16,7 @@
 var map;
 var markers = [];
 var infowindows = [];
+var maxZoomLevel = 17;
 function defaultBounds() {
   return {
         north: 48.70,
@@ -259,6 +260,7 @@ function locationFilter() {
     bounds.extend(position);
   }
   map.fitBounds(bounds);
+  if (map.getZoom() > maxZoomLevel) map.setZoom(maxZoomLevel);
 }
 
 $.urlParam = function(name){
