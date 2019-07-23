@@ -35,11 +35,41 @@ var filtered_graduates = [];
 // //
 // $.getScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.4/jquery.csv.min.js');
 
+// credit: see http://map-icons.com/
+function icon(color) {
+  return {
+      path: "M25 0c-8.284 0-15 6.656-15 14.866 0 8.211 15 35.135 15 35.135s15-26.924 15-35.135c0-8.21-6.716-14.866-15-14.866zm-.049 19.312c-2.557 0-4.629-2.055-4.629-4.588 0-2.535 2.072-4.589 4.629-4.589 2.559 0 4.631 2.054 4.631 4.589 0 2.533-2.072 4.588-4.631 4.588z",
+      fillColor: color,
+      fillOpacity: 1.0,
+      anchor: new google.maps.Point(0,0),
+      strokeWeight: 1.0,
+      strokeColor: '#FFFFFF',
+      scale: 1
+  }
+}
+
+function occupationColor(occupation) {
+  switch(occupation.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("-","").replace(" ","")) {
+    case 'veterinaire':
+      return 'green';
+    case 'infirmier':
+    case 'infirmiere':
+      return 'pink';
+    case 'dentiste':
+      return 'blue';
+    case 'medecin':
+      return 'red';
+    default:
+      return 'white';
+  }
+}
+
 // Adds a marker to the map and push to the array.
-function addMarker(location, info = "") {
+function addMarker(location, info = "", color = 'red') {
   var marker = new google.maps.Marker({
     position: location,
-    map: map
+    map: map,
+    icon: icon(color)
   });
   var infowindow = new google.maps.InfoWindow({
       content: info
@@ -112,7 +142,10 @@ function addGraduateMarkers() {
       lng: parseFloat(all_graduates[ii].gsx$longitude.$t)
     };
     // console.log(position);
-    addMarker(position, all_graduates[ii].gsx$name.$t);
+    var content = renderGrad(all_graduates[ii]);
+    content.setAttribute("style", "margin-bottom:0;");
+
+    addMarker(position, content, occupationColor(all_graduates[ii].gsx$occupation.$t));
   }
 }
 
@@ -136,11 +169,44 @@ function removeAll(){
 }
 
 function getAddressString(data) {
-  return " " + data.gsx$street.$t 
+  return " " + data.gsx$street.$t.trim() 
              + ((data.gsx$street.$t == "")?"":", ") 
-             + data.gsx$zipcode.$t 
-             + " " + data.gsx$city.$t
-             + ", " + data.gsx$country.$t;
+             + data.gsx$zipcode.$t.trim() 
+             + " " + data.gsx$city.$t.trim()
+             + ", " + data.gsx$country.$t.trim();
+}
+
+function renderGrad(data) {
+  var ul = document.createElement("ul");
+  ul.setAttribute('class', "grad_attributes");
+
+  var name = document.createElement("li");
+  name.setAttribute('class', "grad_name");
+  name.appendChild(document.createTextNode(data.gsx$title.$t
+          + '. ' + data.gsx$name.$t.trim()));
+  if (data.gsx$occupation.$t != '') {
+    var occupation = document.createElement("i");
+    occupation.setAttribute('class', "grad_occupation grad_details");
+    occupation.appendChild(document.createTextNode(', '+ data.gsx$occupation.$t));
+    name.appendChild(occupation);
+  }
+  ul.appendChild(name);
+
+  var address = document.createElement("li");
+  address.setAttribute('class', "grad_address grad_details");
+  var address_content = getAddressString(data);
+  address.appendChild(document.createTextNode(address_content));
+  ul.appendChild(address);
+
+  var phone_li = document.createElement("li");
+  phone_li.setAttribute('class', "grad_details");
+  var phone = document.createElement("a");
+  phone.setAttribute('href', 'tel:'+data.gsx$phone.$t)
+  phone.appendChild(document.createTextNode(data.gsx$phone.$t));
+  phone_li.appendChild(phone);
+  ul.appendChild(phone_li);
+
+  return ul;
 }
 
 function renderAll(data) {
@@ -148,28 +214,7 @@ function renderAll(data) {
  var graduate_list = document.getElementById("graduates_list");
  for (ii = 0; ii < data.length; ii++) {
     var grad_li = document.createElement("li");
-    var ul = document.createElement("ul");
-    ul.setAttribute('class', "grad_attributes");
-
-    var name = document.createElement("li");
-    name.setAttribute('class', "grad_name");
-    name.appendChild(document.createTextNode(data[ii].gsx$title.$t
-            + '. ' + data[ii].gsx$name.$t));
-    ul.appendChild(name);
-
-    var address = document.createElement("li");
-    address.setAttribute('class', "grad_address grad_details");
-    var address_content = getAddressString(data[ii]);
-    address.appendChild(document.createTextNode(address_content));
-    ul.appendChild(address);
-
-    var phone_li = document.createElement("li");
-    phone_li.setAttribute('class', "grad_details");
-    var phone = document.createElement("a");
-    phone.setAttribute('href', 'tel:'+data[ii].gsx$phone.$t)
-    phone.appendChild(document.createTextNode(data[ii].gsx$phone.$t));
-    phone_li.appendChild(phone);
-    ul.appendChild(phone_li);
+    var ul = renderGrad(data[ii]);
 
     grad_li.appendChild(ul);
     graduate_list.appendChild(grad_li);
